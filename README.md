@@ -70,3 +70,15 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
+## Links
+
+**Nest.js service**
+
+- [docs Nest.js](https://docs.nestjs.com/)
+- [Assignments](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/assignment.md)
+- [Scoring](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/score.md)
+- [Issuance](https://www.youtube.com/watch?v=xDp7mTjvRvU)
+- [docs RSSchool: Nest.js](https://github.com/rolling-scopes-school/tasks/blob/master/node/modules/rest/rest/README.md)
+- [Discord Chanel](https://discord.com/channels/755676888680366081/1069908830017835071)
