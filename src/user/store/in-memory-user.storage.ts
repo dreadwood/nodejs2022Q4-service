@@ -2,23 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdatePasswordDto } from '../dto/update-password.dto';
-import { UserDto } from '../dto/user.dto';
+import { UserEntity } from '../entities/user.entity';
 import { UserStorage } from '../interfaces/user-storage.interfaces';
 
 @Injectable()
 class InMemoryUserStorage implements UserStorage {
-  private users: UserDto[];
+  private users: UserEntity[] = [];
 
-  findAll(): UserDto[] {
+  findAll(): UserEntity[] {
     return this.users;
   }
 
-  findOne(id: string): UserDto {
+  findOne(id: string): UserEntity {
     // TODO: 2023-02-06 / add null | undefined
     return this.users.find((user) => user.id === id);
   }
 
-  create(params: CreateUserDto): UserDto {
+  create(params: CreateUserDto): UserEntity {
     const date = Date.now();
     const newUser = {
       ...params,
@@ -33,7 +33,7 @@ class InMemoryUserStorage implements UserStorage {
     return newUser;
   }
 
-  update(id: string, params: UpdatePasswordDto): UserDto {
+  update(id: string, params: UpdatePasswordDto): UserEntity {
     // TODO: 2023-02-06 / add if
     const updateUser = this.users.find((user) => user.id === id);
 
