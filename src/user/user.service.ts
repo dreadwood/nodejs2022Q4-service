@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdatePasswordDto } from './dto/update-password.dto';
 import InMemoryUserStorage from './store/in-memory-user.storage';
 
 @Injectable()
@@ -19,8 +18,8 @@ export class UserService {
     return this.storage.findOne(id);
   }
 
-  update(id: string, updateUserDto: UpdatePasswordDto) {
-    return this.storage.update(id, updateUserDto);
+  update(id: string, newPassword: string) {
+    return this.storage.update(id, newPassword);
   }
 
   remove(id: string) {

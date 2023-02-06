@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdatePasswordDto } from '../dto/update-password.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserStorage } from '../interfaces/user-storage.interfaces';
 
@@ -13,9 +12,10 @@ class InMemoryUserStorage implements UserStorage {
     return this.users;
   }
 
-  findOne(id: string): UserEntity {
-    // TODO: 2023-02-06 / add null | undefined
-    return this.users.find((user) => user.id === id);
+  findOne(id: string): UserEntity | null {
+    const user = this.users.find((user) => user.id === id);
+
+    return user ?? null;
   }
 
   create(params: CreateUserDto): UserEntity {
@@ -33,16 +33,28 @@ class InMemoryUserStorage implements UserStorage {
     return newUser;
   }
 
-  update(id: string, params: UpdatePasswordDto): UserEntity {
-    // TODO: 2023-02-06 / add if
-    const updateUser = this.users.find((user) => user.id === id);
+  update(id: string, newPassword: string): UserEntity | false {
+    const updateIndex = this.users.findIndex((user) => user.id === id);
 
-    return Object.assign(updateUser, params);
+    if (updateIndex === -1) {
+      return false;
+    }
+
+    this.users[updateIndex] = {
+      ...this.users[updateIndex],
+      password: newPassword,
+      version: this.users[updateIndex].version + 1,
+    };
+
+    return this.users[updateIndex];
   }
 
-  remove(id: string): void {
-    // TODO: 2023-02-06 / add if
+  remove(id: string): void | false {
     const removeIndex = this.users.findIndex((user) => user.id === id);
+
+    if (removeIndex === -1) {
+      return false;
+    }
 
     this.users = [
       ...this.users.slice(0, removeIndex),
