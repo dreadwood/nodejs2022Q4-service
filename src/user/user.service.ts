@@ -18,6 +18,10 @@ export class UserService {
     return this.storage.findOne(id);
   }
 
+  findRawOne(id: string) {
+    return this.storage.findRawOne(id);
+  }
+
   update(id: string, newPassword: string) {
     return this.storage.update(id, newPassword);
   }

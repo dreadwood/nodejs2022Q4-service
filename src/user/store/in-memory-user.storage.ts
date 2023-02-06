@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UserResponseEntity } from '../entities/user-response.entity';
 import { UserEntity } from '../entities/user.entity';
 import { UserStorage } from '../interfaces/user-storage.interfaces';
 
@@ -8,17 +9,23 @@ import { UserStorage } from '../interfaces/user-storage.interfaces';
 class InMemoryUserStorage implements UserStorage {
   private users: UserEntity[] = [];
 
-  findAll(): UserEntity[] {
-    return this.users;
+  findAll(): UserResponseEntity[] {
+    return this.users.map((user) => this.removeUserPassword(user));
   }
 
-  findOne(id: string): UserEntity | null {
+  findOne(id: string): UserResponseEntity | null {
+    const user = this.users.find((user) => user.id === id);
+
+    return user ? this.removeUserPassword(user) : null;
+  }
+
+  findRawOne(id: string): UserEntity | null {
     const user = this.users.find((user) => user.id === id);
 
     return user ?? null;
   }
 
-  create(params: CreateUserDto): UserEntity {
+  create(params: CreateUserDto): UserResponseEntity {
     const date = Date.now();
     const newUser = {
       ...params,
@@ -30,10 +37,10 @@ class InMemoryUserStorage implements UserStorage {
 
     this.users.push(newUser);
 
-    return newUser;
+    return this.removeUserPassword(newUser);
   }
 
-  update(id: string, newPassword: string): UserEntity | false {
+  update(id: string, newPassword: string): UserResponseEntity | false {
     const updateIndex = this.users.findIndex((user) => user.id === id);
 
     if (updateIndex === -1) {
@@ -44,9 +51,10 @@ class InMemoryUserStorage implements UserStorage {
       ...this.users[updateIndex],
       password: newPassword,
       version: this.users[updateIndex].version + 1,
+      updatedAt: Date.now(),
     };
 
-    return this.users[updateIndex];
+    return this.removeUserPassword(this.users[updateIndex]);
   }
 
   remove(id: string): void | false {
@@ -60,6 +68,13 @@ class InMemoryUserStorage implements UserStorage {
       ...this.users.slice(0, removeIndex),
       ...this.users.slice(removeIndex + 1),
     ];
+  }
+
+  private removeUserPassword(user: UserEntity): UserResponseEntity {
+    const preparedUser = { ...user };
+    delete preparedUser.password;
+
+    return preparedUser;
   }
 }
 

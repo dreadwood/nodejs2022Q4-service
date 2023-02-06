@@ -59,7 +59,7 @@ export class UserController {
       );
     }
 
-    const user = this.userService.findOne(id);
+    const user = this.userService.findRawOne(id);
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
